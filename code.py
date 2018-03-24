@@ -28,6 +28,7 @@ ProcessYcord_start = 0
 ProcessXlength = 0
 ProcessYheight = 0
 click_count = 0
+program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
 
 def WindowInFront(processpath):
         #Bring window in front
@@ -88,6 +89,7 @@ def PrepareWindow(program):
     global guild
     global quests
     global blacksmith
+    global tower
     #Bring window in front
     #PrepareWindow("D:\\Program Files\\Microvirt\\MEmu\\MEmu.exe")
     WindowInFront(program)
@@ -105,7 +107,7 @@ def PrepareWindow(program):
 
     #Absolute positions
     window = {'left': (relX(0.784), relY(0.432)), 'right': (relX(0.202), relY(0.085))}
-    houses = {'tavern': (relX(0.101), relY(0.687)), 'celestial': (relX(0.549), relY(0.262)), 'casino': (relX(0.541), relY(0.697)), 'casino_small': (relX(0.541), relY(0.697)), 'circle': (relX(0.752), relY(0.778)), 'monsters_left': (relX(0.885), relY(0.554)), 'arena': (relX(0.242), relY(0.725)), 'blacksmith': (relX(0.775), relY(0.768))}
+    houses = {'tavern': (relX(0.101), relY(0.687)), 'celestial': (relX(0.549), relY(0.262)), 'casino': (relX(0.541), relY(0.697)), 'casino_small': (relX(0.541), relY(0.697)), 'circle': (relX(0.752), relY(0.778)), 'monsters_left': (relX(0.885), relY(0.554)), 'arena': (relX(0.242), relY(0.725)), 'blacksmith': (relX(0.775), relY(0.768)), 'tower': (relX(0.751), relY(0.432))}
     menu = {'messages': (relX(0.035), relY(0.502)), 'people': (relX(0.035), relY(0.626)), 'guild': (relX(0.688), relY(0.93)), 'events': (relX(0.859), relY(0.112)), 'gold': (relX(0.464), relY(0.081)), 'raid': (relX(0.955), relY(0.214)), 'quests': (relX(0.954), relY(0.472)), 'challenges': (relX(0.937), relY(0.334)), 'seasonal': (relX(0.413), relY(0.935))}
     post = {'claim_all': (relX(0.315), relY(0.207)), 'post_close': (relX(0.852), relY(0.139))}
     people = {'claim_send': (relX(0.722), relY(0.255)), 'monster': (relX(0.838), relY(0.777)), 'scout': (relX(0.503), relY(0.819)), 'ok': (relX(0.503), relY(0.655)), 'people_close': (relX(0.805), relY(0.127))}
@@ -119,25 +121,31 @@ def PrepareWindow(program):
     guild = {'daily': (relX(0.327), relY(0.489)), 'territory': (relX(0.283), relY(0.868)), 'mill': (relX(0.168), relY(0.454)), 'order': (relX(0.502), relY(0.715)), 'order_ok': (relX(0.502), relY(0.87)), 'get_order': (relX(0.729), relY(0.259)), 'submenu_close': (relX(0.824), relY(0.118)), 'close_1': (relX(0.033), relY(0.077)), 'close_2': (relX(0.033), relY(0.077))}
     quests = {'quests_close': (relX(0.83), relY(0.139))}
     blacksmith = {'armor': (relX(0.919), relY(0.496)), 'shoes': (relX(0.922), relY(0.645)), 'amulet': (relX(0.918), relY(0.801)), 'weapon': (relX(0.922), relY(0.341)), 'forge': (relX(0.333), relY(0.838)), 'ok': (relX(0.502), relY(0.654)), 'blacksmith_close': (relX(0.033), relY(0.077))}
+    tower = {'battle': (relX(0.503), relY(0.811)), 'tower_battle': (relX(0.788), relY(0.421)), 'skip': (relX(0.959), relY(0.07)), 'ok': (relX(0.503), relY(0.826)), 'defeat': (relX(0.501), relY(0.531)), 'defeat_close': (relX(0.033), relY(0.077))}
 
 def screenGrab(program):
+    global im
     #screenGrab('D:\Program Files\Microvirt\MEmu\MEmu.exe')
-    PrepareWindow(program)
+    #PrepareWindow(program)
     box = (ProcessXcord_start, ProcessYcord_start, ProcessXcord_start + ProcessXlength, ProcessYcord_start + ProcessYheight)
     im = ImageGrab.grab(box)
-    im.save(os.getcwd() + '\\buttonSnap_current.png', 'PNG')
+    #im.save(os.getcwd() + '\\buttonSnap_current.png', 'PNG')
+    im = cv2.cvtColor(np.array(im), cv2.COLOR_BGR2RGB)
 
 def fullscreenGrab():
+    global im
     box = ()
     im = ImageGrab.grab(box)
-    im.save(os.getcwd() + '\\full_snap__' + time.strftime("%Y%m%d-%H%M%S") +
-'.png', 'PNG')
+    im = cv2.cvtColor(np.array(im), cv2.COLOR_BGR2RGB)
+    #im.save(os.getcwd() + '\\full_snap__' + time.strftime("%Y%m%d-%H%M%S") +
+#'.png', 'PNG')
 
 def buttonSnap(sets,element):
+    global im
     #buttonSnap('menu','messages')
-    program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
+    #program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
 
-    PrepareWindow(program)
+    #PrepareWindow(program)
     cord = eval(sets + "['" + element + "']")
 
     spotextension = 0.1
@@ -145,7 +153,8 @@ def buttonSnap(sets,element):
     Y_conquest = int(round(float(ProcessYheight) * spotextension * 1.5))
     box = (cord[0] - X_conquest, cord[1] - Y_conquest, cord[0] + X_conquest, cord[1] + Y_conquest)
     im = ImageGrab.grab(box)
-    im.save(os.getcwd() + '\\buttonSnap_current.png', 'PNG')
+    im = cv2.cvtColor(np.array(im), cv2.COLOR_BGR2RGB)
+    #im.save(os.getcwd() + '\\buttonSnap_current.png', 'PNG')
 
 def mousePos(cord):
     win32api.SetCursorPos((cord[0], cord[1]))
@@ -190,9 +199,7 @@ def r():
     print "(relX(" + str(round(xcord_rel,3)) + "), relY(" + str(round(ycord_rel,3)) + "))"
 
 def Menu_swipe_left():
-    program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
-    #r('D:\Program Files\Microvirt\MEmu\MEmu.exe')
-    PrepareWindow(program)
+
     #Swipe left
     #print "(" + str(ProcessXcord_start + int(round(ProcessXlength * 0.784))) + "," + str(ProcessYcord_start + int(round(ProcessYheight * 0.432))) + ")"
     x_start = window['left'][0]
@@ -203,11 +210,8 @@ def Menu_swipe_left():
     mousemove(x_start,y_start,x_end,y_end)
 
 def Menu_swipe_right():
-    program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
-    #r('D:\Program Files\Microvirt\MEmu\MEmu.exe')
-    PrepareWindow(program)
-    #Swipe right
 
+    #Swipe right
     #print "(" + str(ProcessXcord_start + int(round(ProcessXlength * 0.784))) + "," + str(ProcessYcord_start + int(round(ProcessYheight * 0.432))) + ")"
     x_start = window['right'][0]
     y_start = window['right'][1]
@@ -223,10 +227,6 @@ def buttonSnippet(x, y, click_count):
     im = ImageGrab.grab(box)
     #im.save(os.getcwd() + '\\buttonSnippet_current.png', 'PNG')
 
-    #Get current window attributes
-    program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
-
-    PrepareWindow(program)
     if (x >= ProcessXcord_start) and (x <= (ProcessXcord_start + ProcessXlength)) and (y >= ProcessYcord_start) and (y <= (ProcessYcord_start + ProcessYheight)):
         #Calculate clicked button area and save image with position
         spotextension = 0.018
@@ -245,21 +245,22 @@ def buttonSnippet(x, y, click_count):
         ycord_str = None
         return xcord_str, ycord_str
 
-def match2(program, template):
+def match2(program, template, im):
 
-    PrepareWindow(program)
+    #PrepareWindow(program)
 
-    imagename = "\\buttonSnap_current.PNG"
+    #imagename = "\\buttonSnap_current.PNG"
     projectpath = os.getcwd() #"C:\\Users\\Michael\\Documents\\Projects\\usr\\bin\\python\\IdleHeroesBot"
     template = projectpath + "\\" + template
-    imagePath = projectpath + imagename
+    #imagePath = projectpath + imagename
     # Read the images from the file
-    img_rgb = cv2.imread(imagePath)
+    #img_rgb = cv2.imread(im)
+
     template = cv2.imread(template)
     w, h = template.shape[:-1]
 
     loc = None
-    res = cv2.matchTemplate(img_rgb, template, cv2.TM_CCOEFF_NORMED)
+    res = cv2.matchTemplate(im, template, cv2.TM_CCOEFF_NORMED)
     threshold = .8
     loc = np.where(res >= threshold)
     #print len(loc[0])
@@ -293,28 +294,28 @@ def match2(program, template):
 # with Listener(on_click=on_click) as Listener:
 #     Listener.join()
 
-
 def VerifiedClick(sets, element):
     i = 0
     j = 0
-    program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
+    #program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
     template = sets + "\\" + element + ".png"
-    #buttonSnap(sets,element)
+
     cord = eval(sets + "['" + element + "']")
-    while i < 5:
-        screenGrab(program)
+    while i < 8:
+        buttonSnap(sets,element)
         try:
-            len_x, len_y = match2(program,template)
+            len_x, len_y = match2(program,template,im)
             if len_x != 0 and len_y != 0:
                 leftClick(((cord[0],cord[1])),.3)
-                i = 5
-                j = 5
+                i = 8
+                j = 8
+                #return cord[0], cord[1]
             else:
                 i += 1
-                time.sleep(.3)
+                time.sleep(1)
         except (RuntimeError, TypeError, NameError):
             i += 1
-            time.sleep(.3)
+            time.sleep(1)
 
     if (j == 0):
         #print ("No button found! Bot stops now.")
@@ -331,20 +332,18 @@ def VerifiedClick_except(sets, element, element_2):
 def VerifiedClick_any(template, bourne):
     i = 0
     j = 0
-    program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
-    imagename = "\\buttonSnap_current.PNG"
-    projectpath = os.getcwd() #"C:\\Users\\Michael\\Documents\\Projects\\usr\\bin\\python\\IdleHeroesBot"
-    imagePath = projectpath + imagename
-
-    while i < 5:
+    #program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
+    #imagename = "\\buttonSnap_current.PNG"
+    #projectpath = os.getcwd() #"C:\\Users\\Michael\\Documents\\Projects\\usr\\bin\\python\\IdleHeroesBot"
+    #imagePath = projectpath + imagename
+    template = cv2.imread(template)
+    w, h = template.shape[:-1]
+    while i < 8:
         screenGrab(program)
         try:
-            img_rgb = cv2.imread(imagePath)
-            template = cv2.imread(template)
-            w, h = template.shape[:-1]
-
+            #img_rgb = cv2.imread(im)
             loc = None
-            res = cv2.matchTemplate(img_rgb, template, cv2.TM_CCOEFF_NORMED)
+            res = cv2.matchTemplate(im, template, cv2.TM_CCOEFF_NORMED)
             threshold = .8
             loc = np.where(res >= threshold)
             #print len(loc[0])
@@ -357,16 +356,16 @@ def VerifiedClick_any(template, bourne):
                 buttonclick = (pt[1] + int(round(ProcessXcord_start*1.00875)), pt[0] + int(round(ProcessYcord_start*1.03)))
                 #print buttonclick
                 print "Area with requested object found!"
-                leftClick(buttonclick,.3)
-                i = 5
-                j = 5
+                leftClick(buttonclick,1)
+                i = 8
+                j = 8
             else:
                 print "No area with requested object found! Try again..."
                 i += 1
-                time.sleep(.3)
+                time.sleep(1)
         except (RuntimeError, TypeError, NameError):
             i += 1
-            time.sleep(.3)
+            time.sleep(1)
     if (j == 0):
         #print ("No button found! Bot stops now.")
         raise RuntimeError('No button found! Bot stops now.')
@@ -374,16 +373,12 @@ def VerifiedClick_any(template, bourne):
         pass
 
 def FarmPost():
-    program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
-    PrepareWindow(program)
 
     VerifiedClick('menu', 'messages')
     VerifiedClick('post', 'claim_all')
     VerifiedClick('post', 'post_close')
 
 def FarmPeople():
-    program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
-    PrepareWindow(program)
 
     VerifiedClick('menu', 'people')
     VerifiedClick('people', 'claim_send')
@@ -396,12 +391,10 @@ def FarmPeople():
     VerifiedClick('people', 'people_close')
 
 def FarmCasino():
-    program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
-    PrepareWindow(program)
 
     try:
         VerifiedClick('houses', 'casino')
-    except Exception, err:
+    except:
         VerifiedClick_any('houses/casino_small.png', 'first')
 
     VerifiedClick('casino', 'common')
@@ -411,8 +404,6 @@ def FarmCasino():
     VerifiedClick('casino', 'casino_close')
 
 def FarmEvents():
-    program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
-    PrepareWindow(program)
 
     VerifiedClick('menu', 'events')
     VerifiedClick('events', 'check_in')
@@ -420,8 +411,6 @@ def FarmEvents():
     VerifiedClick('events', 'event_close')
 
 def FarmSummonCircle():
-    program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
-    PrepareWindow(program)
 
     VerifiedClick('houses', 'circle')
     VerifiedClick_except('circle', 'basic', 'basic_free')
@@ -433,8 +422,7 @@ def FarmSummonCircle():
     VerifiedClick('circle', 'circle_close')
 
 def FarmMonsters():
-    program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
-    PrepareWindow(program)
+
     x = 0
     VerifiedClick('houses', 'monsters_left')
     while x < 6:
@@ -448,8 +436,6 @@ def FarmMonsters():
     VerifiedClick('monsters', 'monsters_close')
 
 def FarmGold():
-    program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
-    PrepareWindow(program)
 
     VerifiedClick('menu', 'gold')
     VerifiedClick('gold', 'free')
@@ -459,16 +445,14 @@ def FarmGold():
     VerifiedClick('gold', 'gold_close')
 
 def FarmRaid():
-    program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
-    PrepareWindow(program)
 
     VerifiedClick('menu', 'raid')
     menus = ['gold', 'brave', 'hero']
     for x in menus:
         VerifiedClick('raid', x)
         y = 0
-        mousemove(relX(0.478), relY(0.81), relX(0.478), relY(0.334))
-        mousemove(relX(0.478), relY(0.81), relX(0.478), relY(0.334))
+        mousemove(relX(0.498), relY(0.81), relX(0.498), relY(0.334))
+        mousemove(relX(0.498), relY(0.81), relX(0.498), relY(0.334))
         while y < 1:
                 try:
                     VerifiedClick_any('raid/challenge.png', 'last')
@@ -484,14 +468,13 @@ def FarmRaid():
     VerifiedClick('raid', 'mainmenu_close')
 
 def FarmGuild():
-    program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
     starts = 0
-    PrepareWindow(program)
 
     VerifiedClick('menu', 'guild')
     VerifiedClick('guild', 'daily')
     VerifiedClick('guild', 'territory')
     VerifiedClick('guild', 'mill')
+    time.sleep(1)
     try:
         VerifiedClick('guild', 'order')
         VerifiedClick('guild', 'order_ok')
@@ -512,8 +495,6 @@ def FarmGuild():
 
 def FarmQuests():
     max_clicks = 0
-    program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
-    PrepareWindow(program)
 
     VerifiedClick('menu', 'quests')
     while max_clicks < 11:
@@ -525,13 +506,11 @@ def FarmQuests():
     VerifiedClick('quests', 'quests_close')
 
 def FarmArena():
-    program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
     starts = 0
-    PrepareWindow(program)
 
     VerifiedClick('houses', 'arena')
     VerifiedClick('arena', 'join')
-    for x in range(0, 2):
+    for x in range(0, 3):
         VerifiedClick('arena', 'battle')
         VerifiedClick_any('arena/enemy.png', 'last')
         VerifiedClick('arena', 'enemy_battle')
@@ -543,11 +522,9 @@ def FarmArena():
     VerifiedClick('arena', 'arena_close')
 
 def FarmBlacksmith():
-    program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
     x = 0
     y = 0
     menus = ['armor', 'shoes', 'amulet', 'weapon']
-    PrepareWindow(program)
 
     VerifiedClick('houses', 'blacksmith')
     time.sleep(1)
@@ -559,12 +536,14 @@ def FarmBlacksmith():
             leftClick((relX(0.293), relY(0.627)),.3)
 
             time.sleep(1)
+            leftClick((relX(0.293), relY(0.627)),.3)
             pyautogui.press('left')
             pyautogui.press('left')
             pyautogui.press('left')
-            pyautogui.hotkey('del')
-            pyautogui.hotkey('del')
-            pyautogui.hotkey('del')
+            pyautogui.press('del')
+            pyautogui.press('del')
+            pyautogui.press('del')
+            time.sleep(.1)
             pyautogui.typewrite('1')
             leftClick((relX(0.43), relY(0.675)),.3)
             VerifiedClick('blacksmith', 'forge')
@@ -582,6 +561,23 @@ def FarmBlacksmith():
             y += 1
     VerifiedClick('blacksmith', 'blacksmith_close')
 
+def FarmTower():
+    run = 0
+    VerifiedClick('houses', 'tower')
+    while run < 1:
+        time.sleep(1)
+        leftClick((relX(0.536), relY(0.861)),.3)
+        VerifiedClick('tower', 'battle')
+        VerifiedClick('tower', 'tower_battle')
+        VerifiedClick('tower', 'skip')
+        try:
+            VerifiedClick_any('tower/defeat.png', 'first')
+            run = 1
+            VerifiedClick('tower', 'defeat_close')
+        except:
+            VerifiedClick('tower', 'ok')
+        time.sleep(.5)
+
 def FullAuto():
     Menu_swipe_right()
     FarmPost()
@@ -597,9 +593,10 @@ def FullAuto():
     FarmArena()
     FarmBlacksmith()
     FarmQuests()
+    FarmTower()
 
 def main():
-    pass
+    PrepareWindow(program)
 
 if __name__ == '__main__':
     main()
