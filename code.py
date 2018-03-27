@@ -20,6 +20,7 @@ import psutil
 from pynput.mouse import Listener
 import logging
 import sys
+import ImageToText
 
 # Globals
 windows = []
@@ -114,7 +115,7 @@ def PrepareWindow(program):
     casino = {'common': (relX(0.394), relY(0.645)), 'spin': (relX(0.459), relY(0.429)), 'again': (relX(0.653), relY(0.865)), 'ok': (relX(0.377), relY(0.868)), 'casino_close': (relX(0.034), relY(0.076))}
     events = {'check_in': (relX(0.851), relY(0.821)), 'ok': (relX(0.503), relY(0.654)), 'event_close': (relX(0.937), relY(0.154))}
     circle = {'basic': (relX(0.201), relY(0.731)), 'basic_free': (relX(0.201), relY(0.731)), 'heroic': (relX(0.445), relY(0.723)), 'heroic_free': (relX(0.445), relY(0.723)), 'summon_basic': (relX(0.444), relY(0.786)), 'summon_heroic': (relX(0.444), relY(0.786)), 'ok': (relX(0.315), relY(0.789)), 'circle_close': (relX(0.035), relY(0.075))}
-    monsters = {'get': (relX(0.9), relY(0.217)), 'loot': (relX(0.86), relY(0.618)), 'claim': (relX(0.501), relY(0.841)), 'monsters_close': (relX(0.034), relY(0.076))}
+    monsters = {'get': (relX(0.9), relY(0.217)), 'loot': (relX(0.86), relY(0.618)), 'claim': (relX(0.501), relY(0.841)), 'monsters_close': (relX(0.034), relY(0.076)), 'level1': (relX(0.215), relY(0.83)), 'level2': (relX(0.361), relY(0.83)), 'level3': (relX(0.5075), relY(0.83)), 'level4': (relX(0.654), relY(0.83)), 'level5': (relX(0.798), relY(0.83)), 'auto_battle': (relX(0.503), relY(0.863)), 'fight': (relX(0.788), relY(0.422)), 'skip': (relX(0.959), relY(0.07)), 'ok': (relX(0.503), relY(0.826)), 'defeat': (relX(0.501), relY(0.531)), 'defeat_close': (relX(0.033), relY(0.077))}
     gold = {'free': (relX(0.412), relY(0.692)), 'claim': (relX(0.503), relY(0.655)), 'more_gold': (relX(0.538), relY(0.692)), 'gold_close': (relX(0.822), relY(0.242))}
     raid = {'gold': (relX(0.247), relY(0.8)), 'brave': (relX(0.502), relY(0.803)), 'hero': (relX(0.756), relY(0.803)), 'mainmenu_close': (relX(0.885), relY(0.13)), 'submenu_close': (relX(0.797), relY(0.17)), 'battle': (relX(0.789), relY(0.419)), 'skip': (relX(0.959), relY(0.07)), 'next': (relX(0.656), relY(0.827)), 'ok': (relX(0.503), relY(0.826))}
     arena = {'join': (relX(0.656), relY(0.796)), 'battle': (relX(0.803), relY(0.607)), 'refresh': (relX(0.778), relY(0.273)), 'enemy': (relX(0.765), relY(0.797)), 'enemy_battle': (relX(0.788), relY(0.421)), 'ok': (relX(0.503), relY(0.828)), 'arena_close': (relX(0.038), relY(0.071))}
@@ -122,6 +123,7 @@ def PrepareWindow(program):
     quests = {'quests_close': (relX(0.83), relY(0.139))}
     blacksmith = {'armor': (relX(0.919), relY(0.496)), 'shoes': (relX(0.922), relY(0.645)), 'amulet': (relX(0.918), relY(0.801)), 'weapon': (relX(0.922), relY(0.341)), 'forge': (relX(0.333), relY(0.838)), 'ok': (relX(0.502), relY(0.654)), 'blacksmith_close': (relX(0.033), relY(0.077))}
     tower = {'battle': (relX(0.503), relY(0.811)), 'tower_battle': (relX(0.788), relY(0.421)), 'skip': (relX(0.959), relY(0.07)), 'ok': (relX(0.503), relY(0.826)), 'defeat': (relX(0.501), relY(0.531)), 'defeat_close': (relX(0.033), relY(0.077))}
+
 
 def screenGrab(program):
     global im
@@ -155,6 +157,22 @@ def buttonSnap(sets,element):
     im = ImageGrab.grab(box)
     im = cv2.cvtColor(np.array(im), cv2.COLOR_BGR2RGB)
     #im.save(os.getcwd() + '\\buttonSnap_current.png', 'PNG')
+
+def buttonSnap_levels(sets,element):
+    global im_levels
+    #buttonSnap('menu','messages')
+    #program = 'D:\Program Files\Microvirt\MEmu\MEmu.exe'
+
+    #PrepareWindow(program)
+    cord = eval(sets + "['" + element + "']")
+
+    spotextension = 0.02
+    X_conquest = int(round(float(ProcessXlength) * spotextension * 1.5))
+    Y_conquest = int(round(float(ProcessYheight) * spotextension * 1.15))
+    box = (cord[0] - X_conquest, cord[1] - Y_conquest, cord[0] + X_conquest, cord[1] + Y_conquest)
+    im_levels = ImageGrab.grab(box)
+    im_levels.save(os.getcwd() + '\\buttonSnap_levels_current.png', 'PNG')
+    #im_levels = cv2.cvtColor(np.array(im_levels), cv2.COLOR_BGR2RGB)
 
 def mousePos(cord):
     win32api.SetCursorPos((cord[0], cord[1]))
@@ -383,11 +401,15 @@ def FarmPeople():
     VerifiedClick('menu', 'people')
     VerifiedClick('people', 'claim_send')
     VerifiedClick('people', 'monster')
-    VerifiedClick('people', 'scout')
+    try:
+        VerifiedClick('people', 'scout')
+    except:
+        pass
     try:
         VerifiedClick('people', 'ok')
     except:
         pass
+    time.sleep(1) 
     VerifiedClick('people', 'people_close')
 
 def FarmCasino():
@@ -398,7 +420,11 @@ def FarmCasino():
         VerifiedClick_any('houses/casino_small.png', 'first')
 
     VerifiedClick('casino', 'common')
+    time.sleep(1)
     VerifiedClick('casino', 'spin')
+    VerifiedClick('casino', 'spin')
+    VerifiedClick('casino', 'spin')
+    time.sleep(.5)
     VerifiedClick('casino', 'again')
     VerifiedClick('casino', 'ok')
     VerifiedClick('casino', 'casino_close')
@@ -425,7 +451,7 @@ def FarmMonsters():
 
     x = 0
     VerifiedClick('houses', 'monsters_left')
-    while x < 6:
+    while x < 8:
         try:
             VerifiedClick('monsters', 'get')
             x += 1
@@ -453,15 +479,19 @@ def FarmRaid():
         y = 0
         mousemove(relX(0.498), relY(0.81), relX(0.498), relY(0.334))
         mousemove(relX(0.498), relY(0.81), relX(0.498), relY(0.334))
+        time.sleep(1)
         while y < 1:
                 try:
                     VerifiedClick_any('raid/challenge.png', 'last')
                     y += 1
                 except:
-                    mousemove(relX(0.478), relY(0.334), relX(0.478), relY(0.5))
+                    mousemove(relX(0.498), relY(0.334), relX(0.498), relY(0.5))
+                    time.sleep(1)
         VerifiedClick('raid', 'battle')
+        time.sleep(.5)
         VerifiedClick('raid', 'skip')
         VerifiedClick('raid', 'next')
+        time.sleep(.5)
         VerifiedClick('raid', 'skip')
         VerifiedClick('raid', 'ok')
         VerifiedClick('raid', 'submenu_close')
@@ -482,12 +512,14 @@ def FarmGuild():
         pass
     VerifiedClick('guild', 'get_order')
     mousemove(relX(0.4), relY(0.565), relX(0.766), relY(0.565))
+    time.sleep(1)
     while starts < 3:
         try:
             VerifiedClick_any('guild/start.png', 'first')
         except Exception, err:
             #Swipe menu left
             mousemove(relX(0.766), relY(0.565), relX(0.4), relY(0.565))
+            time.sleep(1)
             starts += 1
     VerifiedClick('guild', 'submenu_close')
     VerifiedClick('guild', 'close_1')
@@ -577,6 +609,53 @@ def FarmTower():
         except:
             VerifiedClick('tower', 'ok')
         time.sleep(.5)
+
+def FarmLevels(stage):
+    y = 0
+    step = 1
+    stage_end = stage - 3
+    levels = ['level1', 'level2', 'level3', 'level4', 'level5']
+    while step <= stage:
+        cord = monsters[levels[y]]
+        leftClick(((cord[0],cord[1])),.3)
+        print step
+        print stage
+        #print y
+        try:
+            VerifiedClick_any('monsters/passed.png', 'first')
+            cord = monsters[levels[y+1]]
+            leftClick(((cord[0],cord[1])),.3)
+            time.sleep(.3)
+            VerifiedClick('monsters', 'auto_battle')
+            #step = stage
+            step += 1
+            if (y < 1) or (step > stage_end):
+                y += 1
+            time.sleep(.3)
+        except:
+            try:
+                time.sleep(1)
+                leftClick((relX(0.501), relY(0.619)),.3)
+                VerifiedClick('monsters', 'fight')
+                VerifiedClick('monsters', 'skip')
+                try:
+                    VerifiedClick_any('monsters/defeat.png', 'first')
+                    step = stage + 1
+                    VerifiedClick('monsters', 'defeat_close')
+                except:
+                    VerifiedClick('monsters', 'ok')
+                time.sleep(.5)
+                if step == stage:
+                    step += 1   
+            except:
+                step = stage + 1
+                
+        #buttonSnap_levels('monsters', 'level1')
+        #image_text = ImageToText.readText()
+        #if '-' in image_text:
+        #        level = image_text[0:1]
+        #else:
+        #    pass
 
 def FullAuto():
     Menu_swipe_right()
