@@ -324,6 +324,7 @@ def VerifiedClick(sets, element):
         try:
             len_x, len_y = match2(program,template,im)
             if len_x != 0 and len_y != 0:
+                time.sleep(.3)
                 leftClick(((cord[0],cord[1])),.3)
                 i = 8
                 j = 8
@@ -374,6 +375,7 @@ def VerifiedClick_any(template, bourne):
                 buttonclick = (pt[1] + int(round(ProcessXcord_start*1.00875)), pt[0] + int(round(ProcessYcord_start*1.03)))
                 #print buttonclick
                 print "Area with requested object found!"
+                time.sleep(.3)
                 leftClick(buttonclick,1)
                 i = 8
                 j = 8
@@ -406,6 +408,7 @@ def FarmPeople():
     except:
         pass
     try:
+        time.sleep(.5)
         VerifiedClick('people', 'ok')
     except:
         pass
@@ -413,7 +416,7 @@ def FarmPeople():
     VerifiedClick('people', 'people_close')
 
 def FarmCasino():
-
+    time.sleep(.5)
     try:
         VerifiedClick('houses', 'casino')
     except:
@@ -451,7 +454,8 @@ def FarmMonsters():
 
     x = 0
     VerifiedClick('houses', 'monsters_left')
-    while x < 8:
+    time.sleep(1)
+    while x < 10:
         try:
             VerifiedClick('monsters', 'get')
             x += 1
